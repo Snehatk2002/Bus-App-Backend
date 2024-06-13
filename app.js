@@ -4,6 +4,7 @@ const cors=require("cors")
 const {registermodel}=require("./models/register")
 const bcrypt=require("bcryptjs")
 const jwt=require("jsonwebtoken")
+const {busmodel}=require("./models/bus")
 
 
 const generateHashedPassword=async(password)=>{
@@ -78,6 +79,16 @@ app.post("/view", (req, res) => {
     })
 
 })
+
+app.post("/add",(req,res)=>{
+    let input=req.body
+    let bus =new busmodel(input)
+    bus.save()
+    console.log(bus)
+    res.json({"status":"success"})
+})
+
+
 
 app.listen(8080,()=>{
     console.log("server started")
