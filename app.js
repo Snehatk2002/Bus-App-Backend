@@ -3,6 +3,7 @@ const mongoose=require("mongoose")
 const cors=require("cors")
 const {registermodel}=require("./models/register")
 const bcrypt=require("bcryptjs")
+const jwt=require("jsonwebtoken")
 
 
 const generateHashedPassword=async(password)=>{
@@ -27,6 +28,36 @@ app.post("/signup",async(req,res)=>{
     res.json({"status":"success"})
 })
 
+app.post("/signin", (req, res) => {
+    let input = req.body
+     registermodel.find({"email":req.body.email}).then(
+        (response)=>{
+           if (response.length>0) {
+            let dbPassword=response[0].password
+            console.log(dbPassword)
+            bcrypt.compare(input.password,dbPassword,(error,isMath)=>{
+                if (isMath) {
+                   jwt.sign({email:input.email},"bus-app",{expiresIn:"1d"},(error,token)=>{
+                    if(error){
+                        res.json({"status":"unable to create token"})
+                    }else{
+                        res.json({"status":"success","userid":response[0]._id,"token":token})
+                    }
+                   })
+                } else {
+                    
+                    res.json("incorrect password")
+                }
+            })
+           } else {
+
+            res.json({"status":"user not found"})
+
+           }
+        }
+    ).catch()
+
+})
 
 
 app.listen(8080,()=>{
