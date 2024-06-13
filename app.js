@@ -88,6 +88,18 @@ app.post("/add",(req,res)=>{
     res.json({"status":"success"})
 })
 
+app.post("/viewall",(req,res)=>{
+    busmodel.find().then(
+        (data)=>{
+            res.json(data)
+        }
+    ).catch(
+        (error)=>{
+            res.json(error)
+        }
+    )
+})
+
 
 
 app.listen(8080,()=>{
