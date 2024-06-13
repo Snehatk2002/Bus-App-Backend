@@ -58,7 +58,26 @@ app.post("/signin", (req, res) => {
     ).catch()
 
 })
+ 
+app.post("/view", (req, res) => {
+    let token =req.headers["token"]
+    jwt.verify(token,"bus-app",(error,decoded)=>{
+        if(error){
+            res.json({"status":"unauthorized access"})
+        }
+        else{
+            if(decoded)
+            {
+                registermodel.find().then(
+                    (response)=>{
+                        res.json(response)
+                    }
+                ).catch()
+            }
+        }
+    })
 
+})
 
 app.listen(8080,()=>{
     console.log("server started")
